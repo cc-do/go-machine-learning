@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"os"
 	"strconv"
 )
@@ -79,6 +80,16 @@ func loadDataset(predictColumn string) {
 			X = append(X, temp)
 		}
 	}
+
+	fmt.Println(X)
+	fmt.Println(Y)
+	fmt.Println(m)
+	fmt.Println(n)
+}
+
+// Sigmoid函数
+func g(z float64) float64 {
+	return 1 / (1 + math.Exp(-z))
 }
 
 // Hypothesis function
@@ -87,7 +98,7 @@ func h(i int) float64 {
 	for j := 1; j < n; j++ {
 		sum += Q[j] * X[i][j-1]
 	}
-	return sum
+	return g(sum)
 }
 
 // Cost function

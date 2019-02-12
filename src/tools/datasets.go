@@ -63,8 +63,6 @@ func LoadDataset(csvFile string, predictColumn string) ([][]float64, []float64, 
 				return nil, nil, err
 			}
 		}
-		// 将样本特征集的0列固定设为1
-		temp = append([]float64 {1}, temp...)
 
 		// 如果有预测结果列，则temp数组中的该列项归为预测结果，剩下的都是训练数据
 		if predictColIdx != -1 {

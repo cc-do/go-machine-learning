@@ -28,7 +28,7 @@ func main() {
 	g := common.SetGlbVar(samples, results)
 
 	// 标准化样本数据
-	for j := 1; j < g.N; j++ {
+	for j := 0; j < g.N; j++ {
 		var ui float64 = 0
 		max := g.X[0][j]
 		min := g.X[0][j]
@@ -53,10 +53,9 @@ func main() {
 		fmt.Println(g.X[i])
 	}
 
-	// Gradient descent
-	tools.PrintProcs(0)
+	// 梯度下降
 	for t := 0; t < 50000; t++ {
-		for j := 0; j < g.N; j++ {
+		for j := 0; j < g.N + 1; j++ {
 			g.Q[j] = g.Q[j] - g.A * linear_regression.J(j)
 		}
 	}

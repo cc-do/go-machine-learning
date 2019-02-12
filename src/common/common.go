@@ -16,7 +16,7 @@ func SetGlbVar(X [][]float64, Y []float64) *global {
 	_global.Y = Y
 	_global.M = len(Y)
 	_global.N = len(X[0])
-	for t := 0; t < _global.N; t++ {
+	for t := 0; t < _global.N + 1; t++ {
 		_global.Q = append(_global.Q, 1)
 	}
 	_global.A = 0.02

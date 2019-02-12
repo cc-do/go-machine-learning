@@ -75,3 +75,27 @@ func LoadDataset(csvFile string, predictColumn string) ([][]float64, []float64, 
 	}
 	return X, Y, nil
 }
+
+// 标准化样本数据
+func Normalize(X [][]float64) [][]float64 {
+	for j := 0; j < len(X[0]); j++ {
+		var ui float64 = 0
+		max := X[0][j]
+		min := X[0][j]
+		for i := 0; i < len(X); i++ {
+			ui += X[i][j]
+			if X[i][j] > max {
+				max = X[i][j]
+			}
+			if X[i][j] < min {
+				min = X[i][j]
+			}
+		}
+		ui /= float64(len(X))
+		si := max - min
+		for i := 0; i < len(X); i++ {
+			X[i][j] = (X[i][j] - ui) / si
+		}
+	}
+	return X
+}

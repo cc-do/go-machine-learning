@@ -9,6 +9,10 @@ import (
 	"tools"
 )
 
+const V = 0.002	// 学习速度
+const A = 1e-5	// 精度
+const MAX_LOOP = 1e7
+
 func main() {
 	// 读取训练数据集
 	var err error
@@ -28,36 +32,23 @@ func main() {
 	g := common.SetGlbVar(samples, results)
 
 	// 标准化样本数据
-	for j := 0; j < g.N; j++ {
-		var ui float64 = 0
-		max := g.X[0][j]
-		min := g.X[0][j]
-		for i := 0; i < g.M; i++ {
-			ui += g.X[i][j]
-			if g.X[i][j] > max {
-				max = g.X[i][j]
-			}
-			if g.X[i][j] < min {
-				min = g.X[i][j]
-			}
-		}
-		ui /= float64(g.M)
-		si := max - min
-		for i := 0; i < g.M; i++ {
-			g.X[i][j] = (g.X[i][j] - ui) / si
-		}
-	}
+	g.X = tools.Normalize(g.X)
 	fmt.Println("经过标准化之后的样本：")
 	for i := 0; i < g.M; i++ {
-		fmt.Printf("\t")
 		fmt.Println(g.X[i])
 	}
 
 	// 梯度下降
-	for t := 0; t < 100000; t++ {
+	var avgCost float64 = 1
+	for t := 0; t < MAX_LOOP && avgCost > A; t++ {
+		avgCost = 0
 		for j := 0; j < g.N + 1; j++ {
-			g.Q[j] = g.Q[j] - g.A * logistic_regression.J(j)
+			cost := logistic_regression.J(j)
+			g.Q[j] = g.Q[j] - V * cost
+			avgCost += cost
 		}
+		avgCost /= float64(g.N + 1)
+		fmt.Println(avgCost)
 	}
 	fmt.Println("最终特征数组: ", g.Q)
 	for i := 0; i < g.M; i++ {

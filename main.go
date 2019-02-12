@@ -3,8 +3,8 @@ package main
 import (
 	"common"
 	"fmt"
-	"linear_regression"
 	"log"
+	"logistic_regression"
 	"os"
 	"tools"
 )
@@ -14,7 +14,7 @@ func main() {
 	var err error
 	var samples [][]float64
 	var results []float64
-	if samples, results, err = tools.LoadDataset("数据集/heart.csv", "chol"); err != nil {
+	if samples, results, err = tools.LoadDataset("数据集/heart.csv", "target"); err != nil {
 		log.Fatal(err)
 		os.Exit(-1)
 	}
@@ -54,13 +54,13 @@ func main() {
 	}
 
 	// 梯度下降
-	for t := 0; t < 50000; t++ {
+	for t := 0; t < 100000; t++ {
 		for j := 0; j < g.N + 1; j++ {
-			g.Q[j] = g.Q[j] - g.A * linear_regression.J(j)
+			g.Q[j] = g.Q[j] - g.A * logistic_regression.J(j)
 		}
 	}
 	fmt.Println("最终特征数组: ", g.Q)
 	for i := 0; i < g.M; i++ {
-		fmt.Printf("预测结果：%f，模型计算结果：%f\n", g.Y[i], linear_regression.H(i))
+		fmt.Printf("预测结果：%f，模型计算结果：%f\n", g.Y[i], logistic_regression.G(i))
 	}
 }

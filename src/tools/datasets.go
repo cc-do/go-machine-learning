@@ -37,14 +37,14 @@ func LoadDataset(csvFile string, predictColumn string) ([][]float64, []float64, 
 		if i == 0 {
 			featureNum = len(record)
 			if predictColumn != "" {
-				featureNum--
-			}
-			// 记录预测标题的列索引号
-			for j := 0; j < featureNum; j++ {
-				if record[j] == predictColumn {
-					predictColIdx = j
-					break
+				// 记录预测标题的列索引号
+				for j := 0; j < featureNum; j++ {
+					if record[j] == predictColumn {
+						predictColIdx = j
+						break
+					}
 				}
+				featureNum--
 			}
 			continue
 		}

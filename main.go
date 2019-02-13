@@ -42,13 +42,23 @@ func main() {
 	var avgCost float64 = 1
 	for t := 0; t < MAX_LOOP && avgCost > A; t++ {
 		avgCost = 0
+		var maxAvg float64 = -1
+		var minAvg float64 = -1
 		for j := 0; j < g.N + 1; j++ {
 			cost := logistic_regression.J(j)
+			if maxAvg == -1 || minAvg == -1 {
+				maxAvg = cost
+				minAvg = cost
+			} else if maxAvg < cost {
+				maxAvg = cost
+			} else if minAvg > cost {
+				minAvg = cost
+			}
 			g.Q[j] = g.Q[j] - V * cost
 			avgCost += cost
 		}
 		avgCost /= float64(g.N + 1)
-		fmt.Println(avgCost)
+		fmt.Printf("最大误差：%f，最小误差：%f，平均误差：%f\n", maxAvg, minAvg, avgCost)
 	}
 	fmt.Println("最终特征数组: ", g.Q)
 	for i := 0; i < g.M; i++ {

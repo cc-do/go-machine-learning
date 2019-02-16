@@ -11,6 +11,7 @@ type SmxReg struct {
 	linear_regression.LinReg
 	Q [][]float64			// 标签
 	K []float64				// 样例基数
+	R float64				// 权重衰减项
 }
 
 func (sr *SmxReg) SetDataset(samples [][]float64, results []float64) {
@@ -18,6 +19,7 @@ func (sr *SmxReg) SetDataset(samples [][]float64, results []float64) {
 	sr.Y = results
 	sr.M = len(sr.Y)
 	sr.N = len(sr.X[0])
+	sr.R = 0.02
 	// 计算输出空间的离散样本数
 	for t := 0; t < sr.M; t++ {
 		sr.K = tools.Cardinality(sr.Y)
@@ -69,12 +71,12 @@ func (sr *SmxReg) J(j int) float64 {
 		}
 		sum += (sgl - sr.G(i, j)) * xij
 	}
-	return -sum / float64(sr.M)
+	return -sum / float64(sr.M) + tools.NumMulti(sr.Q[j], sr.R)
 }
 
 func (sr *SmxReg) Learn(maxLoop int, accuracy float64, velocity float64) {
 	acc := math.MaxFloat64
-	for t := 0; t < maxLoop; t++ {
+	for t := 0; t < maxLoop && acc > accuracy; t++ {
 		acc = math.MaxFloat64
 		for j := 0; j < len(sr.Q); j++ {
 			for i := 0; i < sr.N + 1; i++ {
@@ -98,9 +100,20 @@ func (sr *SmxReg) Learn(maxLoop int, accuracy float64, velocity float64) {
 
 func (sr *SmxReg) Test() {
 	for i := 0; i < sr.M; i++ {
-		fmt.Printf("预测结果：%f\t", sr.Y[i])
+		fmt.Printf("预测结果：%f，", sr.Y[i])
+		jCur := 0
 		for j := 0; j < len(sr.K); j++ {
-			fmt.Printf("%f\t", sr.H(i, j))
+			if sr.K[j] == sr.Y[i] {
+				jCur = j
+				fmt.Printf("计算结果：%f，", sr.H(i, jCur))
+			}
+		}
+		fmt.Print("其他结果：")
+		for j := 0; j < len(sr.K); j++ {
+			if j == jCur {
+				continue
+			}
+			fmt.Printf("%f:%f，", sr.K[j], sr.H(i, j))
 		}
 		fmt.Println()
 	}

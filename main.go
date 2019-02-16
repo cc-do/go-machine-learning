@@ -7,9 +7,9 @@ import (
 	"softmax_regression"
 )
 
-const V = 0.0002// 学习速度
+const V = 0.002	// 学习速度
 const A = 1e-7	// 精度
-const MAX_LOOP = 1e5
+const MAX_LOOP = 1e8
 
 func main() {
 	// 读取训练数据集

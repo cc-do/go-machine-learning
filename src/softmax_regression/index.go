@@ -21,9 +21,7 @@ func (sr *SmxReg) SetDataset(samples [][]float64, results []float64) {
 	sr.N = len(sr.X[0])
 	sr.R = 0.02
 	// 计算输出空间的离散样本数
-	for t := 0; t < sr.M; t++ {
-		sr.K = tools.Cardinality(sr.Y)
-	}
+	sr.K = tools.Cardinality(sr.Y)
 	// 生成NxK的参数矩阵
 	for i := 0; i < len(sr.K); i++ {
 		var tmpAry []float64
